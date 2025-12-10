@@ -70,8 +70,7 @@ public class OpenCVImageDetection {
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 
-                    System.out.printf("找到目标，位置: (%d, %d)，置信度: %.2f%n",
-                            centerX, centerY, mmr.maxVal);
+                    System.out.printf("找到目标，位置: (%d, %d)，置信度: %.2f%n",centerX, centerY, mmr.maxVal);
                 }
 
                 Thread.sleep(2000);
