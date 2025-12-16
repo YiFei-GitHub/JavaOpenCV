@@ -20,6 +20,12 @@
             <artifactId>opencv</artifactId>
             <version>4.5.1-2</version>
         </dependency>
+        <!-- Cron表达式解析库 -->
+        <dependency>
+            <groupId>com.cronutils</groupId>
+            <artifactId>cron-utils</artifactId>
+            <version>9.2.0</version>
+        </dependency>
     </dependencies>
 
     <build>
