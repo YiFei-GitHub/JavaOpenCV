@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -10,12 +10,12 @@ spring:
     ansi:
       enabled: always
 
-# 自定义配置
+# OpenCV自动化工具配置
 opencv:
   # 模板图片路径配置
   templates:
-    tengxun-huiyi: "src/main/resources/templates/TengXunHuiYi.png"
-    ruhui-button: "src/main/resources/templates/TengXunHuiYi-RuHui.png"
+    tengxun-huiyi: "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi.png"
+    ruhui-button: "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi-RuHui.png"
   
   # 匹配配置
   match:

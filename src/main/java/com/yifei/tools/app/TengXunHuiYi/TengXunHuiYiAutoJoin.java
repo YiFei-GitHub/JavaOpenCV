@@ -21,14 +21,14 @@ import java.time.format.DateTimeFormatter;
  */
 public class TengXunHuiYiAutoJoin {
     
-    // 模板图片路径
-    private static final String TENGXUN_HUIYI_TEMPLATE = "src/main/resources/TengXunHuiYi/TengXunHuiYi.png";
-    private static final String RUHUI_BUTTON_TEMPLATE = "src/main/resources/TengXunHuiYi/TengXunHuiYi-RuHui.png";
-    
-    // 配置参数
-    private static final int WAIT_SECONDS_BETWEEN_MATCH = 3; // 两次匹配之间等待秒数
-    private static final int MAX_RETRY_TIMES = 5; // 最大重试次数
-    private static final double MATCH_THRESHOLD = 0.8; // 匹配阈值
+    // 配置参数 - 注意：这些是独立运行时的默认值
+    // SpringBoot环境下，统一使用application.yml + ResourceConfig类进行配置管理
+    // 参见：src/main/java/com/yifei/restful/opencv/service/TengXunHuiYiService.java
+    private static final String TENGXUN_HUIYI_TEMPLATE = "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi.png";
+    private static final String RUHUI_BUTTON_TEMPLATE = "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi-RuHui.png";
+    private static final int WAIT_SECONDS_BETWEEN_MATCH = 3;
+    private static final int MAX_RETRY_TIMES = 5;
+    private static final double MATCH_THRESHOLD = 0.8;
     
     public static void main(String[] args) {
         Logger.separator("腾讯会议自动入会工具");

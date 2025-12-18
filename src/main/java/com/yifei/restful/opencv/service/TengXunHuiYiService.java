@@ -4,9 +4,10 @@ import com.yifei.tools.image.matcher.ImageMatcher;
 import com.yifei.tools.image.matcher.ImageMatchConfig;
 import com.yifei.tools.image.matcher.MatchResult;
 import com.yifei.tools.windows.MouseUtil;
+import com.yifei.restful.opencv.config.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,20 +29,8 @@ public class TengXunHuiYiService {
     
     private static final Logger logger = LoggerFactory.getLogger(TengXunHuiYiService.class);
     
-    @Value("${opencv.templates.tengxun-huiyi}")
-    private String tengxunHuiyiTemplate;
-    
-    @Value("${opencv.templates.ruhui-button}")
-    private String ruhuiButtonTemplate;
-    
-    @Value("${opencv.match.threshold:0.8}")
-    private double matchThreshold;
-    
-    @Value("${opencv.match.max-retry-times:5}")
-    private int maxRetryTimes;
-    
-    @Value("${opencv.match.wait-seconds:3}")
-    private int waitSeconds;
+    @Autowired
+    private ResourceConfig resourceConfig;
     
     /**
      * 服务初始化检查
@@ -56,16 +45,16 @@ public class TengXunHuiYiService {
         }
         
         logger.info("系统检查通过，服务已就绪");
-        logger.info("定时任务配置: 每天早上6:55执行");
-        logger.info("匹配阈值: {}", matchThreshold);
-        logger.info("最大重试次数: {}", maxRetryTimes);
+        logger.info("定时任务配置: {}", resourceConfig.getSchedule().getCron());
+        logger.info("匹配阈值: {}", resourceConfig.getMatch().getThreshold());
+        logger.info("最大重试次数: {}", resourceConfig.getMatch().getMaxRetryTimes());
     }
     
     /**
      * 定时任务：每天早上6:55执行腾讯会议自动入会
      * cron表达式: 秒 分 时 日 月 周
      */
-    @Scheduled(cron = "${opencv.schedule.cron:0 55 6 * * ?}")
+    @Scheduled(cron = "#{@resourceConfig.schedule.cron}")
     public void executeAutoJoin() {
         logger.info("==================== 腾讯会议自动入会任务开始 ====================");
         
@@ -87,7 +76,7 @@ public class TengXunHuiYiService {
             
             // 第二步：等待软件界面稳定
             logger.info("第二步：等待软件界面稳定...");
-            Thread.sleep(waitSeconds * 1000);
+            Thread.sleep(resourceConfig.getMatch().getWaitSeconds() * 1000);
             
             // 第三步：匹配并点击入会按钮
             logger.info("第三步：查找并点击入会按钮...");
@@ -147,19 +136,19 @@ public class TengXunHuiYiService {
         logger.info("✓ 鼠标操作组件已初始化");
         
         // 检查模板图片是否存在
-        File tengxunTemplate = new File(tengxunHuiyiTemplate);
+        File tengxunTemplate = new File(resourceConfig.getTemplates().getTengxunHuiyi());
         if (!tengxunTemplate.exists()) {
-            logger.error("腾讯会议模板图片不存在: {}", tengxunHuiyiTemplate);
+            logger.error("腾讯会议模板图片不存在: {}", resourceConfig.getTemplates().getTengxunHuiyi());
             return false;
         }
-        logger.info("✓ 腾讯会议模板图片存在: {}", tengxunHuiyiTemplate);
+        logger.info("✓ 腾讯会议模板图片存在: {}", resourceConfig.getTemplates().getTengxunHuiyi());
         
-        File ruhuiTemplate = new File(ruhuiButtonTemplate);
+        File ruhuiTemplate = new File(resourceConfig.getTemplates().getRuhuiButton());
         if (!ruhuiTemplate.exists()) {
-            logger.error("入会按钮模板图片不存在: {}", ruhuiButtonTemplate);
+            logger.error("入会按钮模板图片不存在: {}", resourceConfig.getTemplates().getRuhuiButton());
             return false;
         }
-        logger.info("✓ 入会按钮模板图片存在: {}", ruhuiButtonTemplate);
+        logger.info("✓ 入会按钮模板图片存在: {}", resourceConfig.getTemplates().getRuhuiButton());
         
         return true;
     }
@@ -172,10 +161,10 @@ public class TengXunHuiYiService {
     private boolean findAndOpenTengXunHuiYi() {
         ImageMatchConfig config = createMatchConfig();
         
-        for (int attempt = 1; attempt <= maxRetryTimes; attempt++) {
-            logger.info("尝试查找腾讯会议图标 (第{}/{}次)", attempt, maxRetryTimes);
+        for (int attempt = 1; attempt <= resourceConfig.getMatch().getMaxRetryTimes(); attempt++) {
+            logger.info("尝试查找腾讯会议图标 (第{}/{}次)", attempt, resourceConfig.getMatch().getMaxRetryTimes());
             
-            MatchResult result = ImageMatcher.matchImage(tengxunHuiyiTemplate, config);
+            MatchResult result = ImageMatcher.matchImage(resourceConfig.getTemplates().getTengxunHuiyi(), config);
             
             if (result.isMatched()) {
                 logger.info("✓ 成功找到腾讯会议图标");
@@ -211,7 +200,7 @@ public class TengXunHuiYiService {
                 logger.warn("✗ 未找到腾讯会议图标 (置信度: {})", 
                            String.format("%.4f", result.getConfidence()));
                 
-                if (attempt < maxRetryTimes) {
+                if (attempt < resourceConfig.getMatch().getMaxRetryTimes()) {
                     try {
                         logger.info("等待2秒后重试...");
                         Thread.sleep(2000);
@@ -234,10 +223,10 @@ public class TengXunHuiYiService {
     private boolean findAndClickRuHuiButton() {
         ImageMatchConfig config = createMatchConfig();
         
-        for (int attempt = 1; attempt <= maxRetryTimes; attempt++) {
-            logger.info("尝试查找入会按钮 (第{}/{}次)", attempt, maxRetryTimes);
+        for (int attempt = 1; attempt <= resourceConfig.getMatch().getMaxRetryTimes(); attempt++) {
+            logger.info("尝试查找入会按钮 (第{}/{}次)", attempt, resourceConfig.getMatch().getMaxRetryTimes());
             
-            MatchResult result = ImageMatcher.matchImage(ruhuiButtonTemplate, config);
+            MatchResult result = ImageMatcher.matchImage(resourceConfig.getTemplates().getRuhuiButton(), config);
             
             if (result.isMatched()) {
                 logger.info("✓ 成功找到入会按钮");
@@ -273,7 +262,7 @@ public class TengXunHuiYiService {
                 logger.warn("✗ 未找到入会按钮 (置信度: {})", 
                            String.format("%.4f", result.getConfidence()));
                 
-                if (attempt < maxRetryTimes) {
+                if (attempt < resourceConfig.getMatch().getMaxRetryTimes()) {
                     try {
                         logger.info("等待2秒后重试...");
                         Thread.sleep(2000);
@@ -295,7 +284,7 @@ public class TengXunHuiYiService {
      */
     private ImageMatchConfig createMatchConfig() {
         ImageMatchConfig config = new ImageMatchConfig();
-        config.setThreshold(matchThreshold);
+        config.setThreshold(resourceConfig.getMatch().getThreshold());
         config.setEnableGrayscale(true);
         config.setEnableGaussianBlur(true);
         config.setGaussianKernelSize(3);

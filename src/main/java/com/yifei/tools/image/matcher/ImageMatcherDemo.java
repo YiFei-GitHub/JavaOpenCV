@@ -24,8 +24,8 @@ public class ImageMatcherDemo {
         }
         
         try {
-            // 使用腾讯会议图片作为模板
-            String templatePath = "src/main/resources/TengXunHuiYi/TengXunHuiYi.png";
+            // 使用腾讯会议图片作为模板（注意：此Demo类独立运行，使用硬编码路径）
+            String templatePath = "src/main/resources/templates/TengXunHuiYi.png";
             
             // 检查模板文件是否存在
             File templateFile = new File(templatePath);
