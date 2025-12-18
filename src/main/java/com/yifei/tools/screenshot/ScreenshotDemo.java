@@ -1,4 +1,4 @@
-package yifei.OpenCV.screenshot;
+package com.yifei.tools.screenshot;
 
 import java.awt.Dimension;
 

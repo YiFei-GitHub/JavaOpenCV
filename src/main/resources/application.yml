@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: opencv-automation-tool
+  
+  # 日志配置
+  output:
+    ansi:
+      enabled: always
+
+# 自定义配置
+opencv:
+  # 模板图片路径配置
+  templates:
+    tengxun-huiyi: "src/main/resources/templates/TengXunHuiYi.png"
+    ruhui-button: "src/main/resources/templates/TengXunHuiYi-RuHui.png"
+  
+  # 匹配配置
+  match:
+    threshold: 0.8
+    max-retry-times: 5
+    wait-seconds: 3
+  
+  # 定时任务配置
+  schedule:
+    # 每天早上6:55执行 (秒 分 时 日 月 周)
+    cron: "0 55 6 * * ?"
+    enabled: true
+  
+
+
+# 日志配置
+logging:
+  level:
+    com.yifei.opencv: DEBUG
+    org.springframework: INFO
+    root: INFO
+  
+  # 日志文件配置
+  file:
+    name: logs/opencv-automation.log
+  
+  # 日志格式配置
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  
+  # 日志文件滚动配置
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 1GB

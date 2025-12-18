@@ -1,6 +1,7 @@
-package yifei.OpenCV.image.matcher;
+package com.yifei.tools.image.matcher;
 
-import yifei.OpenCV.screenshot.ScreenshotUtil;
+import com.yifei.tools.screenshot.ScreenshotUtil;
+
 import java.awt.Rectangle;
 import java.io.File;
 
