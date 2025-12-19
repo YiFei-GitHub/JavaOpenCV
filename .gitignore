@@ -3,3 +3,5 @@ match_results/
 tengxun_test_results/
 logs/
 tengxun_match_results/
+.idea/
+output/

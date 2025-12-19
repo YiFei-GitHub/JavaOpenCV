@@ -1,4 +1,4 @@
-package com.yifei.restful.opencv.config;
+package com.yifei.restful.opencv.tengxunhuiyi.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +17,7 @@ public class ResourceConfig {
     private Templates templates = new Templates();
     private Match match = new Match();
     private Schedule schedule = new Schedule();
+    private Output output = new Output();
     
     /**
      * 模板图片路径配置
@@ -79,7 +80,7 @@ public class ResourceConfig {
      * 定时任务配置
      */
     public static class Schedule {
-        private String cron = "0 55 6 * * ?";
+        private String cron = "0 06 55 * * ?";
         private boolean enabled = true;
         
         public String getCron() {
@@ -121,5 +122,37 @@ public class ResourceConfig {
     
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+    
+    public Output getOutput() {
+        return output;
+    }
+    
+    public void setOutput(Output output) {
+        this.output = output;
+    }
+    
+    /**
+     * 输出目录配置
+     */
+    public static class Output {
+        private String screenshotDir = "output/screenshots";
+        private String matchResultDir = "output/match-results";
+        
+        public String getScreenshotDir() {
+            return screenshotDir;
+        }
+        
+        public void setScreenshotDir(String screenshotDir) {
+            this.screenshotDir = screenshotDir;
+        }
+        
+        public String getMatchResultDir() {
+            return matchResultDir;
+        }
+        
+        public void setMatchResultDir(String matchResultDir) {
+            this.matchResultDir = matchResultDir;
+        }
     }
 }

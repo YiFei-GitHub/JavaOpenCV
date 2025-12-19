@@ -1,4 +1,4 @@
-package com.yifei.restful.opencv;
+package com.yifei.restful.opencv.tengxunhuiyi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,12 +12,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @SpringBootApplication
 @EnableScheduling
-public class OpenCVApplication {
+public class OpenCVTengXunHuiYiApplication {
 
     public static void main(String[] args) {
         // 设置系统属性，禁用headless模式，允许GUI操作
         System.setProperty("java.awt.headless", "false");
         
-        SpringApplication.run(OpenCVApplication.class, args);
+        SpringApplication.run(OpenCVTengXunHuiYiApplication.class, args);
     }
 }

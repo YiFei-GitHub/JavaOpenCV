@@ -1,10 +1,11 @@
-package com.yifei.restful.opencv.service;
+package com.yifei.restful.opencv.tengxunhuiyi.service;
 
+import com.yifei.restful.opencv.tengxunhuiyi.config.ResourceConfig;
 import com.yifei.tools.image.matcher.ImageMatcher;
 import com.yifei.tools.image.matcher.ImageMatchConfig;
 import com.yifei.tools.image.matcher.MatchResult;
 import com.yifei.tools.windows.MouseUtil;
-import com.yifei.restful.opencv.config.ResourceConfig;
+import com.yifei.tools.windows.WindowsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,28 @@ public class TengXunHuiYiService {
         
         logger.info("系统检查通过，服务已就绪");
         logger.info("定时任务配置: {}", resourceConfig.getSchedule().getCron());
+        logger.info("定时任务启用状态: {}", resourceConfig.getSchedule().isEnabled());
         logger.info("匹配阈值: {}", resourceConfig.getMatch().getThreshold());
         logger.info("最大重试次数: {}", resourceConfig.getMatch().getMaxRetryTimes());
+        
+        // 显示定时任务信息
+        logger.info("=== 定时任务调度信息 ===");
+        logger.info("Cron表达式: {}", resourceConfig.getSchedule().getCron());
+        logger.info("执行时间: 每天早上6:55");
+        logger.info("注意: 定时任务将在指定时间自动执行");
+        logger.info("可通过 /api/tengxun/manual-join 接口手动触发测试");
+        
+        logger.info("=== SpringBoot定时任务已配置 ===");
+        logger.info("✓ 使用SpringBoot @Scheduled注解，每天6:55自动执行");
+    }
+    
+    /**
+     * 测试定时任务：每分钟执行一次，用于验证调度器是否正常工作
+     * 可以通过日志查看是否按时执行
+     */
+    @Scheduled(cron = "0 * * * * ?")
+    public void testScheduler() {
+        logger.info("🔔 定时任务调度器正常工作 - 当前时间: {}", java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
     
     /**
@@ -56,11 +77,33 @@ public class TengXunHuiYiService {
      */
     @Scheduled(cron = "#{@resourceConfig.schedule.cron}")
     public void executeAutoJoin() {
+        logger.info("SpringBoot @Scheduled 触发的腾讯会议自动入会任务");
+        executeAutoJoinProcess();
+    }
+
+    /**
+     * 手动执行自动入会任务（用于测试）
+     */
+    public void manualExecute() {
+        logger.info("手动触发腾讯会议自动入会任务");
+        executeAutoJoinProcess();
+    }
+
+    /**
+     * 执行自动入会流程的核心方法
+     * 可被SpringBoot定时任务和SimpleScheduler调用
+     */
+    public void executeAutoJoinProcess() {
         logger.info("==================== 腾讯会议自动入会任务开始 ====================");
         
         boolean taskSuccess = false;
         
         try {
+            // 第零步：回到Windows桌面
+            logger.info("第零步：回到Windows桌面...");
+            WindowsUtil.showDesktop();
+            Thread.sleep(2000); // 等待2秒确保桌面显示完成
+            
             // 第一步：查找腾讯会议图标并打开软件
             logger.info("第一步：查找腾讯会议图标...");
             boolean iconFound = findAndOpenTengXunHuiYi();
@@ -104,18 +147,10 @@ public class TengXunHuiYiService {
             }
         }
     }
-    
-    /**
-     * 手动执行自动入会任务（用于测试）
-     */
-    public void manualExecute() {
-        logger.info("手动触发腾讯会议自动入会任务");
-        executeAutoJoin();
-    }
+
     
     /**
      * 检查系统前置条件
-     * 
      * @return 是否满足运行条件
      */
     private boolean checkPrerequisites() {
@@ -292,8 +327,8 @@ public class TengXunHuiYiService {
         config.setGaussianSigmaY(0.8);
         
         // 可选：保存匹配过程图片用于调试
-        config.setSaveProcessImages(false);
-        config.setOutputDir("tengxun_match_results");
+        config.setSaveProcessImages(true);
+        config.setOutputDir(resourceConfig.getOutput().getMatchResultDir());
         
         return config;
     }

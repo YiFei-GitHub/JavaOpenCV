@@ -1,6 +1,6 @@
-package com.yifei.restful.opencv.controller;
+package com.yifei.restful.opencv.tengxunhuiyi.controller;
 
-import com.yifei.restful.opencv.service.TengXunHuiYiService;
+import com.yifei.restful.opencv.tengxunhuiyi.service.TengXunHuiYiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,6 @@ public class TengXunHuiYiController {
     
     /**
      * 手动触发腾讯会议自动入会任务
-     * 
      * @return 执行结果
      */
     @GetMapping("/manual-join")
@@ -51,40 +50,7 @@ public class TengXunHuiYiController {
             result.put("message", "任务触发失败: " + e.getMessage());
             result.put("timestamp", System.currentTimeMillis());
         }
-        
         return result;
     }
-    
-    /**
-     * 获取服务状态
-     * 
-     * @return 服务状态信息
-     */
-    @GetMapping("/status")
-    public Map<String, Object> getStatus() {
-        Map<String, Object> status = new HashMap<>();
-        
-        status.put("service", "TengXunHuiYiService");
-        status.put("status", "running");
-        status.put("description", "腾讯会议自动入会服务");
-        status.put("schedule", "每天早上6:55执行");
-        status.put("timestamp", System.currentTimeMillis());
-        
-        return status;
-    }
-    
-    /**
-     * 健康检查接口
-     * 
-     * @return 健康状态
-     */
-    @GetMapping("/health")
-    public Map<String, Object> health() {
-        Map<String, Object> health = new HashMap<>();
-        
-        health.put("status", "UP");
-        health.put("timestamp", System.currentTimeMillis());
-        
-        return health;
-    }
+
 }
