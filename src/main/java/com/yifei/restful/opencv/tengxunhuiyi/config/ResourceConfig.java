@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Configuration;
  * 资源配置类
  * 统一管理所有静态资源路径配置
  * 
+ * 配置来源：src/main/resources/application.yml
+ * 配置前缀：opencv
+ * 
+ * 注意：此类不设置默认值，所有配置必须在application.yml中定义
+ * 
  * @author yifei
  * @version 1.0
  */
@@ -21,10 +26,11 @@ public class ResourceConfig {
     
     /**
      * 模板图片路径配置
+     * 所有值从application.yml中读取，不设置默认值
      */
     public static class Templates {
-        private String tengxunHuiyi = "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi.png";
-        private String ruhuiButton = "src/main/resources/templates/TengXunHuiYi/TengXunHuiYi-RuHui.png";
+        private String tengxunHuiyi;
+        private String ruhuiButton;
         
         public String getTengxunHuiyi() {
             return tengxunHuiyi;
@@ -45,11 +51,12 @@ public class ResourceConfig {
     
     /**
      * 匹配配置
+     * 所有值从application.yml中读取，不设置默认值
      */
     public static class Match {
-        private double threshold = 0.8;
-        private int maxRetryTimes = 5;
-        private int waitSeconds = 3;
+        private double threshold;
+        private int maxRetryTimes;
+        private int waitSeconds;
         
         public double getThreshold() {
             return threshold;
@@ -78,10 +85,11 @@ public class ResourceConfig {
     
     /**
      * 定时任务配置
+     * 所有值从application.yml中读取，不设置默认值
      */
     public static class Schedule {
-        private String cron = "0 06 55 * * ?";
-        private boolean enabled = true;
+        private String cron;
+        private boolean enabled;
         
         public String getCron() {
             return cron;
@@ -134,10 +142,11 @@ public class ResourceConfig {
     
     /**
      * 输出目录配置
+     * 所有值从application.yml中读取，不设置默认值
      */
     public static class Output {
-        private String screenshotDir = "output/screenshots";
-        private String matchResultDir = "output/match-results";
+        private String screenshotDir;
+        private String matchResultDir;
         
         public String getScreenshotDir() {
             return screenshotDir;
